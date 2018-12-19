@@ -33,7 +33,7 @@
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/make/transaction">Create Records</a>
+              <a class="nav-link" href="/create/record">Create Records</a>
             </li>
             <li class="nav-item active">
               <a class="nav-link" href="/view/transactions">View Records
@@ -122,7 +122,6 @@
                   transaction = [count,
                                 response["chain"][i]["transactions"][j]["account_ID"],
                                 response["chain"][i]["transactions"][j]["record"],
-                                // response["chain"][i]["transactions"][j]["value"],
                                 formattedDateTime,
                                 response["chain"][i]["block_number"]];
                   transactions.push(transaction);
@@ -137,7 +136,6 @@
                   columns: [{ title: "#" },
                             { title: "Account_ID"},
                             { title: "Record"},
-                            // { title: "Value"},
                             { title: "Timestamp"},
                             { title: "Block"}],
                   columnDefs: [ {targets: [1,2,3,4], render: $.fn.dataTable.render.ellipsis( 25 )}]
