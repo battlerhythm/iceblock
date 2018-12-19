@@ -61,7 +61,7 @@
         <div class="row">
           <label class="col-sm-2">Node URLs:</label>
           <div class="col-sm-10">
-            <input type="text" name="nodes" id="nodes" rows="2" class="form-control">
+            <input type="text" name="nodes" id="nodes" rows="2" class="form-control" value="127.0.0.1:5000">
           </div>
         </div>
 
@@ -104,27 +104,26 @@
     <script>
       $(function(){
 
-          $("#add_node_button").click(function () {
-            //console.log($('#confirmation_transaction_form').serialize());
+        $("#add_node_button").click(function () {
 
-            $.ajax({
-              url: "/nodes/register",
-              type: "POST",
-              dataType : 'json',
-              data: $('#node_form').serialize(),
-              success: function(response){
+          $.ajax({
+            url: "/nodes/register",
+            type: "POST",
+            dataType : 'json',
+            data: $('#node_form').serialize(),
+            success: function(response){
 
-                console.log(response);
-                document.getElementById("nodes").value = "";  
-                window.location.reload();
+              console.log(response);
+              document.getElementById("nodes").value = "";  
+              window.location.reload();
 
-              },
-              error: function(error){
-                console.log(error);
-              }
-            });
-
+            },
+            error: function(error){
+              console.log(error);
+            }
           });
+
+        });
 
 
         $.ajax({
@@ -136,7 +135,6 @@
             var node = "";
             
             for (i = 0; i < response['nodes'].length; i++) { 
-              //node = "<li>" + response['nodes'][i] + "</li>";
               node = "<li> <a href=http://" + response['nodes'][i] + ">" + response['nodes'][i] +"</a></li>";
               document.getElementById("list_nodes").innerHTML += node;
 
@@ -148,11 +146,7 @@
           }
         });
 
-
-      })
-
-
-
+      });
 
 
     </script>

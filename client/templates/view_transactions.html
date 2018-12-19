@@ -22,21 +22,21 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="#">Blockchain Client</a>
+        <a class="navbar-brand" href="#">Emergency Contact Client</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item">
-              <a class="nav-link" href="/">Wallet Generator
+              <a class="nav-link" href="/">Account Generator
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/make/transaction">Make Transaction</a>
+              <a class="nav-link" href="/make/transaction">Create Records</a>
             </li>
             <li class="nav-item active">
-              <a class="nav-link" href="/view/transactions">View Transactions
+              <a class="nav-link" href="/view/transactions">View Records
                 <span class="sr-only">(current)</span>
               </a>
             </li>
@@ -52,7 +52,7 @@
         <div class="col-lg-12">
 
           <div class="card-body">
-            <h4 class="card-title">View Transactions</h4>
+            <h4 class="card-title">View Records</h4>
             <p class="card-text">Enter a blockchain node URL and click on "View Transactions" button to check all transactions</p>
           </div>
 
@@ -120,9 +120,9 @@
                   var formattedDateTime = date.toLocaleTimeString("en-us", options);
 
                   transaction = [count,
-                                response["chain"][i]["transactions"][j]["recipient_address"],
-                                response["chain"][i]["transactions"][j]["sender_address"],
-                                response["chain"][i]["transactions"][j]["value"],
+                                response["chain"][i]["transactions"][j]["account_ID"],
+                                response["chain"][i]["transactions"][j]["record"],
+                                // response["chain"][i]["transactions"][j]["value"],
                                 formattedDateTime,
                                 response["chain"][i]["block_number"]];
                   transactions.push(transaction);
@@ -135,12 +135,12 @@
                 $('#transactions_table').dataTable( {
                   data: transactions,
                   columns: [{ title: "#" },
-                            { title: "Recipient Address"},
-                            { title: "Sender Address"},
-                            { title: "Value"},
+                            { title: "Account_ID"},
+                            { title: "Record"},
+                            // { title: "Value"},
                             { title: "Timestamp"},
                             { title: "Block"}],
-                  columnDefs: [ {targets: [1,2,3,4,5], render: $.fn.dataTable.render.ellipsis( 25 )}]
+                  columnDefs: [ {targets: [1,2,3,4], render: $.fn.dataTable.render.ellipsis( 25 )}]
                 } );
 
             },
