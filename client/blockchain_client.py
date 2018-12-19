@@ -6,7 +6,8 @@ import Crypto
 import Crypto.Random
 from Crypto.Hash import SHA
 from Crypto.PublicKey import RSA
-from Crypto.Signature import PKCS1_v1_5
+from Crypto.Signature import PKCS1_v1_5 as Signature
+from Crypto.Cipher import PKCS1_v1_5 as Cipher
 
 import requests
 from flask import Flask, jsonify, request, render_template
@@ -22,22 +23,32 @@ class Transaction:
         return self.data[attr]
 
     def to_dict(self):
-        return OrderedDict({
+        return {
             'account_ID': self.account_ID,
             'record': self.record
-        })
+            }
 
     def sign_transaction(self):
-        """Sign transaction with private key
-
-        Returns:
-            [type] -- [description]
-        """
         private_key = RSA.importKey(binascii.unhexlify(self.private_key))
-        signer = PKCS1_v1_5.new(private_key)
+        signer = Signature.new(private_key)
         h = SHA.new(str(self.to_dict()).encode('utf8'))
 
         return binascii.hexlify(signer.sign(h)).decode('ascii')
+
+    def encrypt_record(self):
+        public_key = RSA.importKey(binascii.unhexlify(self.account_ID))
+        cipher = Cipher.new(public_key)
+        
+        for k, v in self.record.items():
+            # Creat hash, string -> binary
+            h = SHA.new(str(self.record[k]).encode('utf8'))
+
+            # Encrypt, binary(msg) + binary(hash) -> binary
+            ciphertext = cipher.encrypt(v.encode('utf8') + h.digest())
+
+            # Save, binary -> hexa -> ascii
+            self.record[k] = binascii.hexlify(ciphertext).decode('ascii')
+
 
 
 app = Flask(__name__)
@@ -64,9 +75,7 @@ def new_account():
     private_key = RSA.generate(1024, random_gen)
     public_key = private_key.publickey()
     response = {
-        # For signature
         'private_key': binascii.hexlify(private_key.exportKey(format='DER')).decode('ascii'),
-        # For account ID
         'account_ID': binascii.hexlify(public_key.exportKey(format='DER')).decode('ascii')
     }
 
@@ -75,8 +84,6 @@ def new_account():
 
 @app.route('/generate/transaction', methods=['POST'])
 def generate_transaction():
-    """[summary]
-    """
     account_ID = request.form['account_ID']
     private_key = request.form['private_key']
     record = OrderedDict({
@@ -92,7 +99,12 @@ def generate_transaction():
 
     transaction = Transaction(account_ID, private_key, record)
 
+    # Encrypt record
+    transaction.encrypt_record()
+
     response = {'transaction': transaction.to_dict(), 'signature': transaction.sign_transaction()}
+
+    # print(response)
 
     return jsonify(response), 200
 
@@ -101,8 +113,7 @@ if __name__ == '__main__':
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
-    parser.add_argument('-p', '--port', default=8080,
-                        type=int, help='port to listen on')
+    parser.add_argument('-p', '--port', default=8080, type=int, help='listening port')
     args = parser.parse_args()
     port = args.port
 
