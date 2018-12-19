@@ -8,7 +8,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Blockchain Frontend</title>
+    <title>Emergency Contacts Server</title>
 
     <!-- Bootstrap core CSS -->
     <link href="/static/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
@@ -23,19 +23,19 @@
     <!-- Navigation -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
       <div class="container">
-        <a class="navbar-brand" href="#">Blockchain Frontend</a>
+        <a class="navbar-brand" href="#">Emergency Contacts Server</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item active">
-              <a class="nav-link" href="/">Mine
+              <a class="nav-link" href="/">Blocks
                 <span class="sr-only">(current)</span>
               </a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="/configure">Configure</a>
+              <a class="nav-link" href="/configure">Add Nodes</a>
             </li>
           </ul>
         </div>
@@ -48,7 +48,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="card-body">
-            <h4 class="card-title">Transactions to be added to the next block &nbsp;&nbsp;&nbsp;
+            <h4 class="card-title">Records to be added to the next block &nbsp;&nbsp;&nbsp;
               <button type="submit" id="refresh_transactions" class="btn btn-sq-xs btn-primary">
                 <i class="fa fa-refresh"></i>
               </button>
@@ -59,13 +59,13 @@
 
     </div>
 
-    <!-- Unmined Transactions Table -->
+    <!-- Unlinked Transactions Table -->
     <div class="container">
-      <table id="unmined_transactions_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
+      <table id="unlinked_transactions_table" class="table table-striped table-bordered" cellspacing="0" width="100%">
       </table>
 
       <div class="col-lg-12 text-center">
-        <input type="button" id="mine_button" class="btn btn-primary btn-lg" value="Mine">
+        <input type="button" id="link_button" class="btn btn-primary btn-lg" value="Link">
       </div>
 
     </div>
@@ -77,7 +77,7 @@
       <div class="row">
         <div class="col-lg-12">
           <div class="card-body">
-            <h4 class="card-title">Transactions on the Blockchain &nbsp;&nbsp;&nbsp;
+            <h4 class="card-title">Records on the Blockchain &nbsp;&nbsp;&nbsp;
               <button type="submit" id="refresh_blockchain" class="btn btn-sq-xs btn-primary">
                 <i class="fa fa-refresh"></i>
               </button>
@@ -116,21 +116,16 @@
               for (i = 0; i < response['transactions'].length; i++) { 
 
                 transaction = [count,
-                              // response['transactions'][i]["recipient_address"],
-                              response['transactions'][i]["sender_address"],
-                              // response['transactions'][i]["value"]];
-                              response['transactions'][i]['name'],
-                              response['transactions'][i]['date_of_birth'],
-                              response['transactions'][i]['medical_conditions'],
-                              response['transactions'][i]['medical_notes'],
-                              response['transactions'][i]['allergies_and_reactions'],
-                              response['transactions'][i]['medications'],
-                              response['transactions'][i]['blood_type'],
-                              response['transactions'][i]['weight'],
-                              response['transactions'][i]['height'],
-                              response['transactions'][i]['emergency_contact']
+                              response['transactions'][i]["account_ID"],
+                              response['transactions'][i]['record']['name'],
+                              response['transactions'][i]['record']['date_of_birth'],
+                              response['transactions'][i]['record']['medical_notes'],
+                              response['transactions'][i]['record']['blood_type'],
+                              response['transactions'][i]['record']['weight'],
+                              response['transactions'][i]['record']['height'],
+                              response['transactions'][i]['record']['emergency_contact'],
+                              response['transactions'][i]['record']['valid_through']
                               ];
-
 
                   transactions.push(transaction);
 
@@ -138,24 +133,20 @@
               };
 
             // Restrict a column to 10 characters, do split words
-              $('#unmined_transactions_table').dataTable( {
+              $('#unlinked_transactions_table').dataTable( {
                 data: transactions,
                 columns: [{ title: "#" },
-                          // { title: "Recipient Address" },
-                          { title: "Sender Address" },
-                          // { title: "Value" }
+                          { title: "Account ID" },
                           { title: "Name" },
-                          { title: "date_of_birth" },
-                          { title: "medical_conditions" },
-                          { title: "medical_notes" },
-                          { title: "allergies_and_reactions" },
-                          { title: "medications" },
-                          { title: "blood_type" },
-                          { title: "weight" },
-                          { title: "height" },
-                          { title: "emergency_contact" }
+                          { title: "DoB" },
+                          { title: "Medical Notes" },
+                          { title: "Blood Type" },
+                          { title: "Weight" },
+                          { title: "Height" },
+                          { title: "Contact" },
+                          { title: "Valid Through"}
                         ],
-                columnDefs: [ {targets: [1,2,3,4,5,6,7,8,9,10,11], render: $.fn.dataTable.render.ellipsis( 25 )}]
+                columnDefs: [ {targets: [1,2,3,4,5,6,7,8,9], render: $.fn.dataTable.render.ellipsis( 25 )}]
               } );
 
           },
@@ -185,9 +176,8 @@
                 var formattedDateTime = date.toLocaleTimeString("en-us", options);
 
                 transaction = [count,
-                              response["chain"][i]["transactions"][j]["recipient_address"],
-                              response["chain"][i]["transactions"][j]["sender_address"],
-                              response["chain"][i]["transactions"][j]["value"],
+                              response["chain"][i]["transactions"][j]["account_ID"],
+                              response["chain"][i]["transactions"][j]["record"],
                               formattedDateTime,
                               response["chain"][i]["block_number"]];
                 transactions.push(transaction);
@@ -200,12 +190,11 @@
               $('#transactions_table').dataTable( {
                 data: transactions,
                 columns: [{ title: "#" },
-                          { title: "Recipient Address"},
-                          { title: "Sender Address"},
-                          { title: "Value"},
+                          { title: "Account ID"},
+                          { title: "Record"},
                           { title: "Timestamp"},
                           { title: "Block"}],
-                columnDefs: [ {targets: [1,2,3,4,5], render: $.fn.dataTable.render.ellipsis( 25 )}]
+                columnDefs: [ {targets: [1,2,3,4], render: $.fn.dataTable.render.ellipsis( 25 )}]
               } );
 
           },
@@ -215,10 +204,10 @@
         });
 
 
-        $("#mine_button").click(function () {
+        $("#link_button").click(function () {
 
           $.ajax({
-            url: "/mine",
+            url: "/link",
             type: "GET",
             success: function(response){
 
