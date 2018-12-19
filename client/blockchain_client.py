@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from collections import OrderedDict
 
 import binascii
@@ -23,10 +25,10 @@ class Transaction:
         return self.data[attr]
 
     def to_dict(self):
-        return {
-            'account_ID': self.account_ID,
-            'record': self.record
-            }
+        return OrderedDict([
+            ('account_ID', self.account_ID),
+            ('record', self.record),
+        ])
 
     def sign_transaction(self):
         private_key = RSA.importKey(binascii.unhexlify(self.private_key))
@@ -103,8 +105,6 @@ def generate_transaction():
     transaction.encrypt_record()
 
     response = {'transaction': transaction.to_dict(), 'signature': transaction.sign_transaction()}
-
-    # print(response)
 
     return jsonify(response), 200
 

@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from collections import OrderedDict
 
 import binascii
@@ -117,12 +119,6 @@ class Blockchain:
         guess = (str(transactions)+str(last_hash)+str(nonce)).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
-        print (str(transactions))
-        print (str(last_hash))
-        print (str(nonce))
-
-        print ('guess_hash[:difficulty]')
-        print (guess_hash[:difficulty])
         return guess_hash[:difficulty] == '0'*difficulty
 
     def valid_chain(self, chain):
@@ -160,7 +156,6 @@ class Blockchain:
             records = []
             for transaction in transactions:
                 temp = OrderedDict([
-
                     ('account_ID',transaction['account_ID']),
                     ('record', OrderedDict([
                         ('name', transaction['record']['name']),
@@ -179,10 +174,6 @@ class Blockchain:
 
             # transactions = [OrderedDict((k, transaction[k]) for k in transaction_elements) for transaction in transactions]
 
-            print('transactions')
-            print(transactions)
-            print ('self.valid_proof')
-            print(self.valid_proof(transactions, block['previous_hash'], block['nonce'], MINING_DIFFICULTY))
             if not self.valid_proof(transactions, block['previous_hash'], block['nonce'], MINING_DIFFICULTY):
                 return False
 
@@ -207,27 +198,16 @@ class Blockchain:
 
         # Grab and verify the chains from all the nodes in our network
         for node in neighbors:
-            print('http://' + node + '/chain')
             response = requests.get('http://' + node + '/chain')
-
-            print(response.json()['length'])
-            print(response.json()['chain'])
-            print("chain????")
 
             if response.status_code == 200:
                 length = response.json()['length']
                 chain = response.json()['chain']
 
                 # Check if the length is longer and the chain is valid
-                print ("conditions")
-                print (length > max_length)
-                print (self.valid_chain(chain))
-
                 if length > max_length and self.valid_chain(chain):
-                    print("Must get in here")
                     max_length = length
                     new_chain = chain
-                print("???????????")
 
         # Replace our chain if we discovered a new, valid chain longer than ours
         if new_chain:
@@ -313,14 +293,6 @@ def get_transactions():
 
 @app.route('/chain', methods=['GET'])
 def full_chain():
-    # response = {
-    #     'chain': blockchain.chain,
-    #     'length': len(blockchain.chain),
-    # }
-
-    print("chain ordered?")
-    print (blockchain.chain)
-
     response = OrderedDict([
         ('chain', blockchain.chain),
         ('length', len(blockchain.chain)),
