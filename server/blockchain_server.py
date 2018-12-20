@@ -183,13 +183,6 @@ class Blockchain:
         return True
 
     def resolve_conflicts(self):
-        """Resolve conflicts between blockchain's nodes
-        by replacing our chain with the longest one in the network.
-        
-        Returns:
-            [type] -- [description]
-        """
-
         neighbors = self.nodes
         new_chain = None
 
@@ -298,6 +291,23 @@ def full_chain():
         ('length', len(blockchain.chain)),
     ])
     return jsonify(response), 200
+
+@app.route('/chain/transaction/record', methods=['POST'])
+def record():
+    info = request.form
+    account_ID = info.get('account_ID')
+    response = {
+        'record': [] 
+    }
+
+    for block in blockchain.chain:
+        for transaction in block['transactions']:
+            if transaction['account_ID'] == account_ID:
+                response['record'].append(transaction['record'])
+            else:
+                pass         
+
+    return jsonify(response,), 200
 
 
 @app.route('/link', methods=['GET'])

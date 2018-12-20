@@ -71,6 +71,11 @@ def view_transaction():
     return render_template('./view_transactions.html')
 
 
+@app.route('/view/record')
+def view_record():
+    return render_template('/view_record.html'), 200
+
+
 @app.route('/account/new', methods=['GET'])
 def new_account():
     random_gen = Crypto.Random.new().read
