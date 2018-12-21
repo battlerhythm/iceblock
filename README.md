@@ -1,4 +1,4 @@
-# COMS E6181 Project: Blockchain for emergency contacts
+# COMS E6181 Project: Emergency Contacts
 
 # Prerequsite
 - Python: 3.7.0
