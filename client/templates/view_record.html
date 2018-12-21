@@ -156,6 +156,12 @@
 
             };
 
+            // This will show encrypt name
+            console.log(record[1])
+
+            // Transfer data to flask to process decryption and get return
+            // $getJSON($SCRIPT_ROOT + '/view/record/decrypt')
+
             // Restrict a column to 10 characters, do split words
             $('#records_table').dataTable({
               data: records,
@@ -163,7 +169,8 @@
               { title: "name" },
               { title: "date_of_birth" },
               { title: "medical_notes" },
-              { title: "blood_type" }],
+              { title: "blood_type" },
+              ],
               columnDefs: [{ targets: [1, 2, 3, 4], render: $.fn.dataTable.render.ellipsis(25) }]
             });
 

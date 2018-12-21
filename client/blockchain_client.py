@@ -33,7 +33,7 @@ class Transaction:
     def sign_transaction(self):
         private_key = RSA.importKey(binascii.unhexlify(self.private_key))
         signer = Signature.new(private_key)
-        h = SHA.new(str(self.to_dict()).encode('utf8'))
+        h = SHA.new(str(self.to_dict()).encode('ascii'))
 
         return binascii.hexlify(signer.sign(h)).decode('ascii')
 
@@ -43,14 +43,27 @@ class Transaction:
         
         for k, v in self.record.items():
             # Creat hash, string -> binary
-            h = SHA.new(str(self.record[k]).encode('utf8'))
+            h = SHA.new(v.encode('ascii'))
 
             # Encrypt, binary(msg) + binary(hash) -> binary
-            ciphertext = cipher.encrypt(v.encode('utf8') + h.digest())
+            ciphertext = cipher.encrypt(v.encode('ascii') + h.digest())
 
             # Save, binary -> hexa -> ascii
             self.record[k] = binascii.hexlify(ciphertext).decode('ascii')
 
+    def decrypt_record(self, encrypted_data, private_key):
+        private_key = RSA.importKey(binascii.unhexlify(private_key))
+        dsize = SHA.digest_size
+        # Let's assume that average data length is 15
+        sentinel = Crypto.Random.new().read(15+dsize)
+        cipher = Cipher.new(private_key)
+        message = cipher.decrypt(binascii.unhexlify(encrypted_data), sentinel)
+        digest = SHA.new(message[:-dsize]).digest()
+
+        if digest == message[-dsize:]:
+            return message[:-dsize].decode('ascii')
+        else:
+            return False
 
 
 app = Flask(__name__)
@@ -112,6 +125,31 @@ def generate_transaction():
     response = {'transaction': transaction.to_dict(), 'signature': transaction.sign_transaction()}
 
     return jsonify(response), 200
+
+
+# @app.route('/view/record/decrypt')
+# def view_record_decrypt():
+#     name = request.args.get('name','', type=str)
+#     date_of_birth = request.args.get('date_of_birth','', type=str)
+#     medical_notes = request.args.get('medical_notes','', type=str)
+#     blood_type = request.args.get('blood_type','', type=str)
+#     weight = request.args.get('weight','', type=str)
+#     height = request.args.get('height','', type=str)
+#     emergency_contact = request.args.get('emergency_contact','', type=str)
+#     valid_through = request.args.get('valid_through','', type=str)
+
+#     response = {
+#         'name': decrypt_record(name),
+#         'date_of_birth': decrypt_record(date_of_birth),
+#         'medical_notes': decrypt_record(medical_notes),
+#         'blood_type': decrypt_record(blood_type),
+#         'weight': decrypt_record(weight),
+#         'height': decrypt_record(height),
+#         'emergency_contact': decrypt_record(emergency_contact),
+#         'valid_through': decrypt_record(valid_through),
+#     }
+
+#     return jsonify(response), 200
 
 
 if __name__ == '__main__':

@@ -20,11 +20,7 @@ import requests
 from flask import Flask, jsonify, request, render_template
 from flask_cors import CORS
 
-
-# MINING_SENDER = "THE BLOCKCHAIN"
-# MINING_REWARD = 1
 MINING_DIFFICULTY = 2
- 
 
 class Blockchain:
     def __init__(self):
@@ -94,6 +90,7 @@ class Blockchain:
         self.transactions = []
 
         self.chain.append(block)
+
         return block
 
     def hash(self, block):
@@ -115,7 +112,6 @@ class Blockchain:
         return nonce
 
     def valid_proof(self, transactions, last_hash, nonce, difficulty=MINING_DIFFICULTY):
-        # Check if a hash value satisfies the mining conditions. This function is used within the proof_of_work function.
         guess = (str(transactions)+str(last_hash)+str(nonce)).encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
 
@@ -138,20 +134,20 @@ class Blockchain:
             # Delete the reward transaction
             transactions = block['transactions']
             # Need to make sure that the dictionary is ordered. Otherwise we'll get a different hash
-            transaction_elements = [
-                'account_ID',
-                'record'
-            ]
-            record_elements = [
-                'name',
-                'date_of_birth',
-                'medical_notes',
-                'blood_type',
-                'weight',
-                'height',
-                'emergency_contact',
-                'valid_through'
-            ]
+            # transaction_elements = [
+            #     'account_ID',
+            #     'record'
+            # ]
+            # record_elements = [
+            #     'name',
+            #     'date_of_birth',
+            #     'medical_notes',
+            #     'blood_type',
+            #     'weight',
+            #     'height',
+            #     'emergency_contact',
+            #     'valid_through'
+            # ]
 
             records = []
             for transaction in transactions:
@@ -312,11 +308,9 @@ def record():
 
 @app.route('/link', methods=['GET'])
 def link():
-    # We run the proof of work algorithm to get the next proof...
     last_block = blockchain.chain[-1]
     nonce = blockchain.proof_of_work()
  
-    # Forge the new Block by adding it to the chain
     previous_hash = blockchain.hash(last_block)
     block = blockchain.create_block(nonce, previous_hash)
 
