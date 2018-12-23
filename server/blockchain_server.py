@@ -33,14 +33,18 @@ class Blockchain:
 
         # Create genesis block
         genesis_message = {
-            'code': '별 헤는 밤\n\n' +
-                    '계절이 지나가는 하늘에는 가을로 가득 차 있습니다.\n' +
-                    '나는 아무 걱정도 없이\n' +
-                    '가을 속의 별들을 다 헤일 듯 합니다.\n\n' + 
-                    '가슴 속에 하나 둘 새겨지는 별을 이제 다 못헤는 것은\n' + 
-                    '쉬이 아침이 오는 까닭이요, 내일 밤이 남은 까닭이요,\n' +
-                    '아직 나의 청춘이 다 하지 않은 까닭입니다.\n\n' +
-                    '- 윤동주\n'
+           'code': 'Counting the Stars at Night\n\n' +
+                    'In the sky where seasons pass\n' +
+                    'Autumn fills the air.\n' +
+                    'And ready I wait without worry\n' + 
+                    'to count all the stars she bears\n\n' + 
+                    'Now the reason I cannot tally\n' +
+                    'all the stars impressed on my heart, is\n' +
+                    '‘cause the morning soon comes,\n' +
+                    'my youth’s not quite done, and\n' +
+                    'another night still lays in store\n\n' +
+                    '- Yun Dong-ju\n'
+
         }
         self.create_block(nonce=0, previous_hash=self.hash(genesis_message))
 
