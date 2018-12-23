@@ -6,7 +6,7 @@
 
 # How to install and run
 1. git clone 
-2. cd blockchain
+2. cd iceblock
 3. pipenv shell
 
 ## To run server
