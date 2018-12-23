@@ -1,4 +1,4 @@
-# COMS E6181 Project: Emergency Contacts
+# COMS E6181 Project: ICE Block
 
 # Prerequsite
 - Python: 3.7.0
