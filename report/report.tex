@@ -85,28 +85,52 @@ but user need to think it will be really available everywhere.
 The service may not cross border because there might be political issues.
 
 \section{Design Principle}
-To overcome previous solutions limitation.
- 
+ICE Block designed with following requirements withdrawn from previous efforts and requirements.
 
 \paragraph{High Availability}
-Mobile device can fail -> remote server
-centralized db can fail -> replica
+ICE Block should have High Availability because its service is for human lives. It should minimize service down time which is planned or not. Mobile devices local storage doesn’t meet this requirement because it doesn’t have back up plan when the device is not working. Distributed Database should be considered to meet this requirement.
 
 \paragraph{Sensitive Information}
-Encryption
+User provided information should be encrypted so that none of people cannot see their information without the user’s authorization. Symmetric encryption can encrypt and decrypt user information but it doesn’t provide signature functionality. Asymmetric RSA Key meets this requirements.
 
 \paragraph{Low Cost}
-To ran by any body even in cell phone
+Cost of running service should be low enough. Because the services’ nature is for non-profit or civil service. Service architectures and internal algorithm should spend less energy and computational power.
 
 \paragraph{Scalability}
-Lower down 
+It also needs to provide great scalability. People travels long distance and hard to expect where the accident happen. Providing local service may not cover all emergency. So, it should be not depending on local infra or certain entity.
 
+\subsection{Architecture}
+Following the requirements, ICE Block designed as a public blockchain service.
+Client can create user’s RSA key pair.
+Its public key used as account\_ID.
+All information user provided going to be encrypted at client side and then transferred to one of the nodes in the network.
+The node accepts the transaction when it has valid signature. See Fig.\,\ref{fig:1}
 
-\subsection{Design}
+After receiving transaction, The Server needs to create a new block so that the transactions are linked with existing chain. To create a new block, it needs previous block’s hash and calculated nonce.
+Nonce is number of try to find a valid hash that is ending with several zeros. See Fig.\,\ref{fig:2}
 
+The server should consist network with other neighbors. The network selects one chain with algorithm that is agreed by all participants. ICE Block use simple algorithm.
+If node found longer than its chain and it is valid, the node replaces its chain with the chain. See Fig.\,\ref{fig:3}
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.25]{encryption}
+    \caption{Creating trasaction}
+    \label{fig:1}
+\end{figure}
 
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.25]{pow}
+    \caption{Proof of Work}
+    \label{fig:2}
+\end{figure}
 
-
+\begin{figure}
+    \centering
+    \includegraphics[scale=0.25]{consensus}
+    \caption{Consensus}
+    \label{fig:3}
+\end{figure}
 
 
 \subsection{Server}
@@ -248,9 +272,8 @@ Server use port 5000 and Client use 8080 as default.
 
 
 \section{Demonstration}
-
-\subsection{}
-
+I showed ICE Block's functionality in class demo.
+Decryption logic fully functional but it's rendering at web is not implemented.
 
 
 \section{Experience from prototyping}
