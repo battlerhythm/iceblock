@@ -100,10 +100,14 @@ Lower down
 
 \subsection{Design}
 
+
+
+
+
+
 \subsection{Server}
 ICE Block Server gets transactions from muliple clients. It needs to validate the transaction and create a new block.
 The server also needs to keep data consistancy throughout the network. It use consensus algorithm to select a chain from neighbors.
-
 
 \paragraph{Validation of Transaction} 
 Client send a transaction that is containing account\_ID, encrypted record and signature.
@@ -239,42 +243,48 @@ And also, get an argument of port using -p flag from command line.
 Server use port 5000 and Client use 8080 as default.
 
 
-\section{Validation}
+\section{Demonstration}
 
 \subsection{}
+
+
 
 \section{Experience from prototyping}
 Throughout the implementation, I learned something new I didn't kwno before.
 
 \paragraph{RSA has maximum bytes to encrypt}
 When I was tring to encrypt whole information which is user provided,
-I realized it is not possble.\cite{r5} I created 1024 bits of key that is 
-
+I realized it is not possble.\cite{r5} I created 1024 bits of key that means it can encrypt 
+128 bytes including 11 bytes of padding for PKCS1.
+I decided encrypt it's value by value. Increasing number of bits of key is not good solution because ICE Block using public key as ID.
+ID had to be short enough to be represneted in QR Code for good recognition.
 
 \paragraph{Hash cares order}
+ICE Block gets user input as html form and it is treated in Python dictionary.
+After encryption, the information delivered using JSON format.
+The problem I was encountred is when creating a Hash for the information.
+It had to be ordered so I used Python OrderedDict to construct and re-construct.
 
 \section{Futher Work}
+To provide better interface to user, key representation should be considered.
+The prototype only shows string representation of Account\_ID and private key.
+Better way to representation technology should be applied for this.
+QR Code or RFID can be an option. To apply QR Code, User can decide it's visibility
+But key should be short enough to be easily scanned.
 
-
-QR Code or RFID?
-
-
-Encryption
-
-
-scalability -> 1. Proof of Work and Conflict Resolver test
-                    Block creation notify to neighbors
-                    Async conflict resolve
-                    memlock
-
-                2. Utilizing locality
-
-
+To provide better scalability, Applying difficulty algorithm should be considered
+because if it is too easy, The chain may not be converged.
+Notifying new block creation is also should be considered.
+I presume asynchronous way of consensus can be helpful.
 
 \section{Conclusions}
 ICE Block provide scalable database for emergency contact.
-
-
+I implemented prototype and showed its service concept in Demo.
+It is a light weight public blockchain network anyone can run.
+User doesn’t have to worry about lost or damage of their local storage.
+And It can be accepted global standard of emergency contact because it will be maintained by participating nodes not the government or organization.
+It means that first respondent doesn't have to spend more time to identify patients.
+I hope ICE Block save more lives 
 
 
 \begin{thebibliography}{00}
