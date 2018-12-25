@@ -52,7 +52,7 @@ they need to follow remote direction from medical staff who is located in remote
 What if you have a specific response to the injection, or a history of a particular chronic disease they need to know?
 If you are lucky, you body doesn't react to emergency prescriptions, or even worse.
 
-We need to leave our basic medical information and contacts that is easily accessible by anyone who can help people who is in emergency situation.
+We need to save our basic medical information and contacts that is easily accessible by anyone who can help people who is in emergency situation.
 There are several solution is available today for this.
 First, We can use local storage like cell phone that can show your basic medical information and contact list without unlock it. 
 Second, Remote online server can be an alternative.
@@ -61,7 +61,6 @@ All of these solutions have shortcomings and problems that is ICE Block solved.
 ICE Block resolves limitations of existing solutions and potentially can be extended its service scope
 beyond its original purpose. 
 
-
 \section{Previous Work}
 
 \subsection{Using Local Storage}
@@ -69,20 +68,25 @@ Mobile devices like cell phone provide easy way of saving information in local.
 People carry cell phone almost everywhere they go. So, it will be most likely found every accident scene with patients.
 Some of the cell phone maker providing functionality of emergency medical information using local storage.
 For example, Apple's Medical ID\cite{r1} provide local storage which is available without unlock the device.
-
-
-
-This solution is not available when the local storage is not accessible
+Their solution seems pausible but has some limitation.
+It is not available when the local storage is not accessible
 because of physical damage or no power.
 To provide high availability, the information should be stored in remote storage.
 
 \subsection{Using Remote Server}
-Emergency Contact Database by Illinois
-Google Docs
+Some of the goverment provide emergency contact service. Illinois's Emergency Contact Database is good example.
+User voluntarily save their information on the database and it can be used in emergency.
+I assume their solution built on conventional architecture that is expansive to scale.
+Prodiving high reliability with great scalability is burden for any organization.
 
+Using Cloud repository might be a solution but it also has some limitation.
+Store and backup a few of line of characters on global cloud service like Goole Docs might be simple and economic solution
+but user need to think it will be really available everywhere.
+The service may not cross border because there might be political issues.
 
 \section{Design Principle}
-The problem 
+To overcome previous solutions limitation.
+ 
 
 \paragraph{High Availability}
 Mobile device can fail -> remote server
@@ -250,7 +254,7 @@ Server use port 5000 and Client use 8080 as default.
 
 
 \section{Experience from prototyping}
-Throughout the implementation, I learned something new I didn't kwno before.
+Throughout the implementation, I learned something new I didn't know before.
 
 \paragraph{RSA has maximum bytes to encrypt}
 When I was tring to encrypt whole information which is user provided,
